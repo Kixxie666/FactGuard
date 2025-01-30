@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Register - Factguard{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<div class="auth-container">
+    <div class="auth-box">
+        <h2 class="text-center">Create an Account</h2>
+        <p class="text-center text-muted">Join Factguard to detect fake news.</p>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success btn-lg w-100">Sign Up</button>
+        </form>
+
+        <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</div>
+
+{% endblock %}

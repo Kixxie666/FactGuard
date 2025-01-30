@@ -1,0 +1,115 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+h1, h2 {
+    text-align: center;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+a {
+    text-decoration: none;
+    color: #3498db;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #2980b9, #1f6695);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+    font-size: 16px;
+    transition: border 0.3s ease-in-out;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.3);
+}
+
+.navbar {
+    padding: 15px;
+    background: #2c3e50;
+}
+
+.navbar .navbar-brand {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(68, 59, 59) !important;
+}
+
+.navbar .nav-link {
+    color: #0d97b9 !important;
+    font-weight: 500;
+}
+
+.navbar .nav-link:hover {
+    color: #3498db !important;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #2c3e50;
+    color: #ecf0f1;
+    margin-top: 50px;
+    font-size: 14px;
+    border-top: 2px solid #3498db;
+}
+
+footer a {
+    color: #3498db;
+}
+
+footer a:hover {
+    color: #1f6695;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background: #ffffff;
+}

@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home - Factguard{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4">Welcome to Factguard</h1>
+        <p class="lead">Your trusted fake news detection system.</p>
+        <p class="text-muted">Verify information with confidence and stay informed.</p>
+
+        {% if user.is_authenticated %}
+            <p class="mt-4">Hello, <strong>{{ user.username }}</strong>! <a href="{% url 'logout' %}" class="btn btn-danger btn-lg">Logout</a></p>
+        {% else %}
+            <div class="mt-4">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg">Register</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Reliable Detection</h5>
+                    <p class="card-text">Our AI-powered system helps detect and flag misinformation accurately.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-shield fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">User Protection</h5>
+                    <p class="card-text">Ensure you are consuming legitimate news and avoid misleading information.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Insights & Analytics</h5>
+                    <p class="card-text">Track trends and get insights into how misinformation spreads.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
