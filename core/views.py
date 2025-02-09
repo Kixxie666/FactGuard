@@ -30,3 +30,8 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('home')
+
+from django.shortcuts import render
+
+def classify(request):
+    return render(request, 'core/classify.html')
