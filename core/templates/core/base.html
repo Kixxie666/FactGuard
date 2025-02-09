@@ -10,7 +10,6 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">Factguard</a>
@@ -32,12 +31,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Footer -->
     <footer class="bg-dark text-light text-center py-3 mt-5">
         <p>&copy; 2025 Factguard. All rights reserved.</p>
     </footer>
