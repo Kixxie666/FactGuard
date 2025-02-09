@@ -1,25 +1,55 @@
+import os
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import make_pipeline
-import joblib
+import pickle  # Save as PKL
+from news_api import fetch_news
 
-# Load data
-data = pd.read_csv('news_data.csv')
+# Define correct file paths
+LEGIT_PATH = r"E:/Factguard/Data/legit"  # Use raw string to avoid escape errors
+FAKE_PATH = r"E:/Factguard/Data/fake"
+SAVE_PATH_CSV = r"C:/Users/rgt20/Downloads/Dataguard/FactGuard/news_data.csv"
+SAVE_PATH_PKL = r"C:/Users/rgt20/Downloads/Dataguard/FactGuard/news_data.pkl"
 
-# Data Preparation
-X = data['text']
-y = data['label']
+# Ensure data directories exist
+if not os.path.exists(LEGIT_PATH) or not os.path.exists(FAKE_PATH):
+    raise FileNotFoundError("❌ Data folder missing. Check that E:/Factguard/Data exists!")
 
-# Split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Load file names
+legit_files = os.listdir(LEGIT_PATH)
+fake_files = os.listdir(FAKE_PATH)
 
-# Create a model pipeline
-model = make_pipeline(TfidfVectorizer(), MultinomialNB())
+# Function to read files safely
+def read_file(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except UnicodeDecodeError:
+        with open(file_path, 'rb') as f:  # Read as binary
+            raw_data = f.read()
+        try:
+            return raw_data.decode('utf-8')  # Try UTF-8 first
+        except UnicodeDecodeError:
+            return raw_data.decode('latin-1')  # Fallback to Latin-1
 
-# Train the model
-model.fit(X_train, y_train)
+# Read content from files
+legit_data = [read_file(os.path.join(LEGIT_PATH, file)) for file in legit_files]
+fake_data = [read_file(os.path.join(FAKE_PATH, file)) for file in fake_files]
 
-# Save the model
-joblib.dump(model, 'fake_news_model.pkl')
+# Fetch additional news data
+extra_news = fetch_news('politics')
+extra_legit_data = [article['title'] for article in extra_news['articles']]
+
+# Create DataFrames
+legit_df = pd.DataFrame({'text': legit_data + extra_legit_data, 'label': 'legit'})
+fake_df = pd.DataFrame({'text': fake_data, 'label': 'fake'})
+
+# Combine datasets
+full_data = pd.concat([legit_df, fake_df])
+
+# Save CSV file
+full_data.to_csv(SAVE_PATH_CSV, index=False, encoding='utf-8')
+print(f"✅ Data CSV saved to {SAVE_PATH_CSV}")
+
+# Save as Pickle (`.pkl`) file
+with open(SAVE_PATH_PKL, 'wb') as pkl_file:
+    pickle.dump(full_data, pkl_file)
+print(f"✅ Data PKL saved to {SAVE_PATH_PKL}")
