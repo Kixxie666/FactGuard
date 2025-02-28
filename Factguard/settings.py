@@ -7,7 +7,7 @@ SECRET_KEY = 'your-secret-key'
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
