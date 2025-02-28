@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth  import login, authenticate, logout
-from .models import SavedWebsite
-from .models import Profile
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import SavedWebsite, Profile
 
 def register(request):
     if request.method == 'POST':
@@ -31,31 +30,29 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
-<<<<<<< HEAD
-from django.shortcuts import render
-
 def classify(request):
     return render(request, 'core/classify.html')
-=======
+
 def home(request):
-    return render(request, "core/home.html")  # Ensure this template exists
+    return render(request, "core/home.html")
 
 @login_required
 def save_website(request):
     if request.method == "POST":
         url = request.POST.get("url")
         if url:
+            # Ensure the website is saved uniquely per user
             SavedWebsite.objects.get_or_create(user=request.user, url=url)
     return redirect("home")
 
 @login_required
 def profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)  # Ensure profile exists
+
     if request.method == "POST":
         profile_picture = request.FILES.get("profile_picture")
         if profile_picture:
-            profile, created = Profile.objects.get_or_create(user=request.user)
             profile.profile_picture = profile_picture
             profile.save()
-    
-    return render(request, "core/profile.html")
->>>>>>> 780b8b26 (Going back to wherer i was from a different version after the revert.)
+
+    return render(request, "core/profile.html", {"profile": profile})
