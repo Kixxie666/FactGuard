@@ -33,7 +33,7 @@ ROOT_URLCONF = 'Factguard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core/templates'],
+        'DIRS': [BASE_DIR / 'core/templates', BASE_DIR / 'fake_news_detection/templates', BASE_DIR / 'Factguard/Data'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -45,6 +45,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'Factguard.wsgi.application'
 

@@ -1,13 +1,17 @@
 from django.shortcuts import render
 import joblib
-from news_api import fetch_news
+import os
+from .news_api import fetch_news
 
-model = joblib.load('fake_news_model.pkl')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "fake_news_model.pkl")
+
+
+model = joblib.load(MODEL_PATH)
 
 def classify_news(request):
     if request.method == 'POST':
         news_text = request.POST.get('news_text')
         prediction = model.predict([news_text])[0]
-        external_data = fetch_news(news_text)
-        return render(request, 'result.html', {'prediction': prediction, 'external_data': external_data})
-    return render(request, 'classify.html')
+        return render(request, 'fake_news_detection/result.html', {'prediction': prediction})
+    return render(request, 'fake_news_detection/classify.html')
