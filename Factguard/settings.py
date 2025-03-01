@@ -10,7 +10,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net'
+    'c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net',
+    'https://c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net'
 ]
 
 
