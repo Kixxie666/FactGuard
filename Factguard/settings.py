@@ -7,6 +7,10 @@ SECRET_KEY = 'your-secret-key'
 
 DEBUG = True
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net",
+]
+
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
