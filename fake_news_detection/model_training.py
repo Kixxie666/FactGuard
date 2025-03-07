@@ -50,11 +50,11 @@ full_data = pd.concat([legit_df, fake_df])
 
 
 full_data.to_csv(SAVE_PATH_CSV, index=False, encoding='utf-8')
-print(f"✅ Data CSV saved to {SAVE_PATH_CSV}")
+print(f" Data CSV saved to {SAVE_PATH_CSV}")
 
 with open(SAVE_PATH_PKL, 'wb') as pkl_file:
     pickle.dump(full_data, pkl_file)
-print(f"✅ Data PKL saved to {SAVE_PATH_PKL}")
+print(f" Data PKL saved to {SAVE_PATH_PKL}")
 
 
 model = make_pipeline(TfidfVectorizer(), MultinomialNB())
@@ -63,4 +63,4 @@ model.fit(X, y)
 
 
 joblib.dump(model, MODEL_PATH)
-print(f"✅ Model trained and saved as {MODEL_PATH}!")
+print(f" Model trained and saved as {MODEL_PATH}!")
