@@ -1,0 +1,76 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container community-container">
+    <h1 class="text-center">Community Board</h1>
+    <p class="text-center text-muted">Vote on links to verify their authenticity</p>
+
+    {% if posts %}
+        <div class="table-responsive">
+            <table class="table table-hover custom-table">
+                <thead>
+                    <tr>
+                        <th>Website</th>
+                        <th>Description</th>
+                        <th>Posted By</th>
+                        <th>Votes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                        <tr>
+                            <td><a href="{{ post.url }}" target="_blank" class="text-primary">{{ post.url }}</a></td>
+                            <td>{{ post.description }}</td>
+                            <td><strong>{{ post.posted_by.username }}</strong></td>
+                            <td class="text-center"><strong class="vote-count">{{ post.votes.count }}</strong></td>
+                            <td class="vote-buttons">
+                                <button class="btn vote-btn upvote" onclick="vote('{{ post.id }}', 'upvote')">↑ Upvote</button>
+                                <button class="btn vote-btn downvote" onclick="vote('{{ post.id }}', 'downvote')">↓ Downvote</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="d-flex justify-content-center mt-3">
+            <nav>
+                <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ posts.number }} of {{ posts.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if posts.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ posts.paginator.num_pages }}">Last &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+    {% else %}
+        <p class="text-center text-muted">No links have been submitted yet. Be the first to add one!</p>
+    {% endif %}
+</div>
+
+<script>
+    async function vote(postId, voteType) {
+        const response = await fetch(`/vote/${postId}/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+            body: JSON.stringify({ vote_type: voteType }),
+        });
+        const data = await response.json();
+        alert(data.message);
+        location.reload();
+    }
+</script>
+
+{% endblock %}
