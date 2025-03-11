@@ -18,7 +18,6 @@ ALLOWED_HOSTS = [
     'https://c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net'
 ]
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,6 +36,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "core.middleware.RaspberryPiAccessMiddleware",
 ]
 
 ROOT_URLCONF = 'Factguard.urls'
@@ -56,7 +56,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 WSGI_APPLICATION = 'Factguard.wsgi.application'
 
@@ -85,4 +84,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-MIDDLEWARE.append("core.middleware.RaspberryPiAccessMiddleware")
