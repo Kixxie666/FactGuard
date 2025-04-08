@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.paginator import Paginator
 from .models import CommunityPost, Vote
+from .models import SafeURL
 
 def register(request):
     if request.method == 'POST':
@@ -114,3 +115,33 @@ def submit_for_verification(request):
         )
 
         return JsonResponse({"message": "Submitted for community verification!"}, status=201)
+
+def safe_urls_api(request):
+    safe_urls = SavedWebsite.objects.all()
+    data = [{'id': url.id, 'url': url.url} for url in safe_urls]
+    return JsonResponse(data, safe=False)
+
+@csrf_exempt
+def submit_vote(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            url_id = data.get('url_id')
+            vote = data.get('vote')  # 'legit' or 'fake'
+
+            site = SavedWebsite.objects.get(id=url_id)
+
+            if vote == 'fake':
+                site.fake_votes += 1
+            elif vote == 'legit':
+                site.legit_votes += 1
+            site.save()
+
+            return JsonResponse({'status': 'ok'})
+
+        except SavedWebsite.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'URL not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
