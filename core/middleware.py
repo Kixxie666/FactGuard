@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 class RaspberryPiAccessMiddleware:
-    ALLOWED_IPS = ['127.0.0.1']  # Or replace with your Raspberry Pi IP
+    ALLOWED_IPS = ['31.205.137.39']
 
     def __init__(self, get_response):
         self.get_response = get_response
