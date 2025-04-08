@@ -9,5 +9,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("core.urls")),
     path('fake-news/', include('fake_news_detection.urls')),
-    path("save-website/", save_website, name="save_website"),  # ✅ Ensure this exists
+    path("save-website/", save_website, name="save_website"),  
 ]
