@@ -1,12 +1,15 @@
 from django.http import JsonResponse
 
 class RaspberryPiAccessMiddleware:
-    ALLOWED_IPS = ['xxx.x.x.xxx']  #RasPi IP
+    ALLOWED_IPS = ['127.0.0.1']  # Or replace with your Raspberry Pi IP
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith("/vote/") and request.META['REMOTE_ADDR'] not in self.ALLOWED_IPS:
+        ip = request.META.get('REMOTE_ADDR', '')
+
+        if request.path.startswith("/vote/") and ip not in self.ALLOWED_IPS:
             return JsonResponse({"error": "Access restricted to Raspberry Pi users"}, status=403)
+
         return self.get_response(request)
