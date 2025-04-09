@@ -152,16 +152,21 @@ from rest_framework.response import Response
 from .models import SavedWebsite
 from django.contrib.auth.models import User
 
+from .models import CommunityPost
+
 @api_view(['GET'])
-def safe_urls_api(request):
-    safe_urls = SavedWebsite.objects.all()
+def community_posts_api(request):
+    posts = CommunityPost.objects.all().order_by("-created_at")
     data = [
         {
-            'id': url.id,
-            'url': url.url,
-            'legit_votes': url.legit_votes,
-            'fake_votes': url.fake_votes
+            'id': post.id,
+            'url': post.url,
+            'description': post.description,
+            'votes': post.votes.count(),
+            'downvotes': post.downvote_count(),
+            'posted_by': post.posted_by.username
         }
-        for url in safe_urls
+        for post in posts
     ]
     return Response(data)
+
