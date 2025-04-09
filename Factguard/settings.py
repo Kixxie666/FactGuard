@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fake_news_detection',
+    'rest_framework',
     'core',
 ]
 
