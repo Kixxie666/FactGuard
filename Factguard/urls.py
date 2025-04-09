@@ -7,6 +7,7 @@ from core.views import save_website
 def home_redirect(request):
     return redirect(reverse('classify_news'))
 urlpatterns = [
+    path('', home_redirect),
     path('fake-news/', include('fake_news_detection.urls')),
     path("save-website/", save_website, name="save_website"),  
 ]
