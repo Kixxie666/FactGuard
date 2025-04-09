@@ -14,7 +14,7 @@ urlpatterns = [
     path("post-url/", post_url, name="post_url"),
     path("vote/<int:post_id>/", vote, name="vote"),
     path("community-board/", community_board, name="community_board"),
-    path('api/safe-urls/', views.safe_urls_api),
-    path('api/submit-vote/', views.submit_vote),
     path("submit-for-verification/", submit_for_verification, name="submit_for_verification"),
+    path('api/safe-urls/', views.safe_urls_api, name='safe-urls-api'),
+    path('api/submit-vote/', views.submit_vote, name='submit-vote-api'),
 ]

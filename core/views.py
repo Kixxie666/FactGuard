@@ -122,12 +122,6 @@ def submit_for_verification(request):
         return JsonResponse({"message": "Submitted for community verification!"}, status=201)
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
-
-def safe_urls_api(request):
-    safe_urls = SavedWebsite.objects.all()
-    data = [{'id': url.id, 'url': url.url} for url in safe_urls]
-    return JsonResponse(data, safe=False)
-
 @csrf_exempt
 def submit_vote(request):
     if request.method == 'POST':
@@ -152,3 +146,22 @@ def submit_vote(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import SavedWebsite
+from django.contrib.auth.models import User
+
+@api_view(['GET'])
+def safe_urls_api(request):
+    safe_urls = SavedWebsite.objects.all()
+    data = [
+        {
+            'id': url.id,
+            'url': url.url,
+            'legit_votes': url.legit_votes,
+            'fake_votes': url.fake_votes
+        }
+        for url in safe_urls
+    ]
+    return Response(data)
