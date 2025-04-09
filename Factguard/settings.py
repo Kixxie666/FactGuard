@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'fake_news_detection',
     'core',
 ]
 
@@ -36,7 +37,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "core.middleware.RaspberryPiAccessMiddleware",
+    'core.middleware.RaspberryPiAccessMiddleware',
 ]
 
 ROOT_URLCONF = 'Factguard.urls'
