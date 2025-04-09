@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.paginator import Paginator
 from .models import CommunityPost, Vote
-from .models import SafeURL
+from .models import SavedWebsite
 
 def register(request):
     if request.method == 'POST':
@@ -73,6 +73,9 @@ def post_url(request):
         )
         return JsonResponse({"message": "Posted successfully!"}, status=201)
 
+    return JsonResponse({"message": "Invalid request method"}, status=405)
+
+
 @csrf_exempt
 def vote(request, post_id):
     if request.method == "POST":
@@ -89,6 +92,8 @@ def vote(request, post_id):
             return JsonResponse({"message": "Post removed due to downvotes"}, status=200)
 
         return JsonResponse({"message": "Vote registered"}, status=200)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)
 
 def community_board(request):
     post_list = CommunityPost.objects.all().order_by("-created_at") 
@@ -115,6 +120,8 @@ def submit_for_verification(request):
         )
 
         return JsonResponse({"message": "Submitted for community verification!"}, status=201)
+
+    return JsonResponse({"message": "Invalid request method"}, status=405)
 
 def safe_urls_api(request):
     safe_urls = SavedWebsite.objects.all()
