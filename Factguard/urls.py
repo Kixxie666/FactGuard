@@ -10,4 +10,5 @@ urlpatterns = [
     path('', home_redirect),
     path('fake-news/', include('fake_news_detection.urls')),
     path("save-website/", save_website, name="save_website"),  
+    path('', include('core.urls')),
 ]
