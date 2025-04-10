@@ -9,7 +9,12 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.paginator import Paginator
 from .models import CommunityPost, Vote
-from .models import SavedWebsite
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+
+from .models import CommunityPost
+
 
 def register(request):
     if request.method == 'POST':
@@ -147,12 +152,6 @@ def submit_vote(request):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import SavedWebsite
-from django.contrib.auth.models import User
-
-from .models import CommunityPost
 
 @api_view(['GET'])
 def community_posts_api(request):
@@ -162,9 +161,9 @@ def community_posts_api(request):
             'id': post.id,
             'url': post.url,
             'description': post.description,
-            'votes': post.votes.count(),
-            'downvotes': post.downvote_count(),
-            'posted_by': post.posted_by.username
+            'votes': post.votes.count() if post.votes else 0,
+            'downvotes': post.downvote_count() if hasattr(post, 'downvote_count') else 0,
+            'posted_by': post.posted_by.username if post.posted_by else "Anonymous"
         }
         for post in posts
     ]
