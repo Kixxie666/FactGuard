@@ -11,6 +11,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://c2025401-eccjh2fxfjbch6hg.uksouth-01.azurewebsites.net",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5000"
+]
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
@@ -28,6 +31,7 @@ INSTALLED_APPS = [
     'fake_news_detection',
     'rest_framework',
     'core',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -39,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "core.middleware.RaspberryPiAccessMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Factguard.urls'
