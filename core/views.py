@@ -1,19 +1,15 @@
-from django.shortcuts import render, redirect
+import json
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import SavedWebsite, Profile
-from django.shortcuts import get_object_or_404, render
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
 from django.core.paginator import Paginator
-from .models import CommunityPost, Vote
+from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-
-from .models import CommunityPost
+from .models import SavedWebsite, Profile, CommunityPost, Vote
 
 
 def register(request):
@@ -123,10 +119,19 @@ def submit_for_verification(request):
             url=url,
             defaults={"description": description, "posted_by": request.user}
         )
+        saved_site, created_site = SavedWebsite.objects.get_or_create(
+            url=url,
+            defaults={
+                "user": request.user,
+                "fake_votes": 0,
+                "legit_votes": 0
+            }
+        )
 
         return JsonResponse({"message": "Submitted for community verification!"}, status=201)
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
+
 @csrf_exempt
 def submit_vote(request):
     if request.method == 'POST':
