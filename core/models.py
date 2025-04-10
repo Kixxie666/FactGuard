@@ -27,7 +27,7 @@ class CommunityPost(models.Model):
         return self.votes.filter(vote_type='downvote').count()
 
     def should_be_removed(self):
-        return self.downvote_count() >= 10  # Remove if 10 downvotes are reached
+        return self.downvote_count() >= 1  # Remove if 1 downvote
 
 class Vote(models.Model):
     VOTE_TYPES = [
@@ -40,4 +40,4 @@ class Vote(models.Model):
     vote_type = models.CharField(max_length=10, choices=VOTE_TYPES)
     
     class Meta:
-        unique_together = ('post', 'user')  # Prevent duplicate votes from the same user
+        unique_together = ('post', 'user')  # no duplicate votes from the same user
