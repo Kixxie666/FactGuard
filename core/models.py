@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pictures/', default='default.png')
+
     def __str__(self):
         return self.user.username
+
 
 class SavedWebsite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -17,27 +19,29 @@ class SavedWebsite(models.Model):
     def __str__(self):
         return self.url
 
+
 class CommunityPost(models.Model):
     url = models.URLField(unique=True)
     description = models.TextField(blank=True)
     posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def downvote_count(self):
-        return self.votes.filter(vote_type='downvote').count()
+    def fake_vote_count(self):
+        return self.votes.filter(vote_type='fake').count()
 
     def should_be_removed(self):
-        return self.downvote_count() >= 1  # Remove if 1 downvote
+        return self.fake_vote_count() >= 10  # Remove after 10 fake votes
+
 
 class Vote(models.Model):
     VOTE_TYPES = [
-        ('upvote', 'Upvote'),
-        ('downvote', 'Downvote')
+        ('legit', 'Legit'),
+        ('fake', 'Fake')
     ]
 
     post = models.ForeignKey(CommunityPost, related_name="votes", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vote_type = models.CharField(max_length=10, choices=VOTE_TYPES)
-    
+
     class Meta:
-        unique_together = ('post', 'user')  # no duplicate votes from the same user
+        unique_together = ('post', 'user')  # No duplicate votes from the same user
