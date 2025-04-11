@@ -32,6 +32,9 @@
         </div>
     </nav>
 
+    <!-- 🔔 Geolocation Alert -->
+    <div id="geo-alert" class="alert alert-warning text-center" style="display: none;"></div>
+
     <div class="container mt-4">
         {% block content %}{% endblock %}
     </div>
@@ -41,5 +44,48 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    fetch('/get-trending-alert/', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": getCookie("csrftoken"),
+                        },
+                        body: JSON.stringify({
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude,
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const alertBox = document.getElementById("geo-alert");
+                        if (data.alert) {
+                            alertBox.innerHTML = `<i class="fa fa-bell"></i> ${data.alert}`;
+                            alertBox.style.display = "block";
+                        }
+                    });
+                });
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === name + "=") {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+
 </body>
 </html>
