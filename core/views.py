@@ -87,23 +87,34 @@ def post_url(request):
 @csrf_exempt
 def vote(request, post_id):
     if request.method == "POST":
-        data = json.loads(request.body)
-        post = get_object_or_404(CommunityPost, id=post_id)
+        try:
+            data = json.loads(request.body)
+            vote_type = data.get('vote_type')
 
-        # Anonymous vote (no user)
-        Vote.objects.create(
-            post=post,
-            vote_type=data.get('vote_type')
-        )
+            if vote_type not in ['fake', 'legit']:
+                return JsonResponse({"message": "Invalid vote type"}, status=400)
 
-        if post.should_be_removed():
-            post.delete()
-            return JsonResponse({"message": "Post removed due to downvotes"}, status=200)
+            post = get_object_or_404(CommunityPost, id=post_id)
 
-        return JsonResponse({"message": "Vote registered"}, status=200)
+            # Save anonymous vote
+            Vote.objects.create(post=post, vote_type=vote_type)
+
+            # Check if should be removed (only if method exists)
+            if hasattr(post, 'should_be_removed') and callable(post.should_be_removed):
+                if post.should_be_removed():
+                    post.delete()
+                    return JsonResponse({"message": "Post removed due to downvotes"}, status=200)
+
+            return JsonResponse({"message": "Vote registered"}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"message": "Invalid JSON format"}, status=400)
+        except CommunityPost.DoesNotExist:
+            return JsonResponse({"message": "Post not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"message": f"Server error: {str(e)}"}, status=500)
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
-
 
 def community_board(request):
     post_list = CommunityPost.objects.all().order_by("-created_at")
