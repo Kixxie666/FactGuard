@@ -139,20 +139,20 @@ def submit_vote(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            url_id = data.get('url_id')
-            vote = data.get('vote')
+            url = data.get('url')
+            vote = data.get('vote')  # 'legit' or 'fake'
 
-            post = CommunityPost.objects.get(id=url_id)
+            site = SavedWebsite.objects.get(url=url)
 
             if vote == 'fake':
-                post.savedwebsite.fake_votes += 1
+                site.fake_votes += 1
             elif vote == 'legit':
-                post.savedwebsite.legit_votes += 1
+                site.legit_votes += 1
 
-            post.savedwebsite.save()
-
+            site.save()
             return JsonResponse({'status': 'ok'})
-        except CommunityPost.DoesNotExist:
+
+        except SavedWebsite.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'URL not found'}, status=404)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
