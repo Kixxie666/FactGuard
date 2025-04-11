@@ -23,6 +23,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'core/register.html', {'form': form})
 
+
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -34,15 +35,19 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'core/login.html', {'form': form})
 
+
 def user_logout(request):
     logout(request)
     return redirect('home')
 
+
 def classify(request):
     return render(request, 'core/classify.html')
 
+
 def home(request):
     return render(request, "core/home.html")
+
 
 @login_required
 def save_website(request):
@@ -52,9 +57,10 @@ def save_website(request):
             SavedWebsite.objects.get_or_create(user=request.user, url=url)
     return redirect("home")
 
+
 @login_required
 def profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user) 
+    profile, created = Profile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
         profile_picture = request.FILES.get("profile_picture")
@@ -63,6 +69,7 @@ def profile(request):
             profile.save()
 
     return render(request, "core/profile.html", {"profile": profile})
+
 
 @csrf_exempt
 def post_url(request):
@@ -82,10 +89,11 @@ def vote(request, post_id):
     if request.method == "POST":
         data = json.loads(request.body)
         post = get_object_or_404(CommunityPost, id=post_id)
-        vote, created = Vote.objects.update_or_create(
+
+        # Anonymous vote (no user)
+        Vote.objects.create(
             post=post,
-            user=request.user,
-            defaults={'vote_type': data.get('vote_type')}
+            vote_type=data.get('vote_type')
         )
 
         if post.should_be_removed():
@@ -96,14 +104,17 @@ def vote(request, post_id):
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-def community_board(request):
-    post_list = CommunityPost.objects.all().order_by("-created_at") 
-    paginator = Paginator(post_list, 5)  
 
-    page_number = request.GET.get("page") 
-    posts = paginator.get_page(page_number)  
+def community_board(request):
+    post_list = CommunityPost.objects.all().order_by("-created_at")
+    paginator = Paginator(post_list, 5)
+
+    page_number = request.GET.get("page")
+    posts = paginator.get_page(page_number)
 
     return render(request, "core/community_board.html", {"posts": posts})
+
+
 @csrf_exempt
 @login_required
 def submit_for_verification(request):
@@ -132,7 +143,6 @@ def submit_for_verification(request):
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
-from .models import CommunityPost
 
 @csrf_exempt
 def submit_vote(request):
@@ -176,6 +186,7 @@ def community_posts_api(request):
     ]
     return Response(data)
 
+
 @api_view(['POST'])
 @csrf_exempt
 def get_trending_alert(request):
@@ -183,7 +194,6 @@ def get_trending_alert(request):
     lat = data.get('lat')
     lon = data.get('lon')
 
-    # fake news for testing
     return JsonResponse({
         'alert': f"Fake News Alert: Something suspicious is trending near you (lat: {lat}, lon: {lon})"
     })
