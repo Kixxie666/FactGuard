@@ -130,24 +130,24 @@ def community_board(request):
 @login_required
 def submit_for_verification(request):
     if request.method == "POST":
-        data = json.loads(request.body)
+        if request.content_type == "application/json":
+            data = json.loads(request.body)
+        else:
+            data = request.POST
+
         url = data.get("url")
         description = data.get("description", "User-verified news link")
 
         if not url:
             return JsonResponse({"message": "URL is required!"}, status=400)
 
-        post, created = CommunityPost.objects.get_or_create(
+        post, _ = CommunityPost.objects.get_or_create(
             url=url,
             defaults={"description": description, "posted_by": request.user}
         )
-        saved_site, created_site = SavedWebsite.objects.get_or_create(
+        SavedWebsite.objects.get_or_create(
             url=url,
-            defaults={
-                "user": request.user,
-                "fake_votes": 0,
-                "legit_votes": 0
-            }
+            defaults={"user": request.user, "fake_votes": 0, "legit_votes": 0}
         )
 
         return JsonResponse({"message": "Submitted for community verification!"}, status=201)
