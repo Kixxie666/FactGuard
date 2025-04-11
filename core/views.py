@@ -132,25 +132,27 @@ def submit_for_verification(request):
 
     return JsonResponse({"message": "Invalid request method"}, status=405)
 
+from .models import CommunityPost
+
 @csrf_exempt
 def submit_vote(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             url_id = data.get('url_id')
-            vote = data.get('vote')  # 'legit' or 'fake'
+            vote = data.get('vote')
 
-            site = SavedWebsite.objects.get(id=url_id)
+            post = CommunityPost.objects.get(id=url_id)
 
             if vote == 'fake':
-                site.fake_votes += 1
+                post.savedwebsite.fake_votes += 1
             elif vote == 'legit':
-                site.legit_votes += 1
-            site.save()
+                post.savedwebsite.legit_votes += 1
+
+            post.savedwebsite.save()
 
             return JsonResponse({'status': 'ok'})
-
-        except SavedWebsite.DoesNotExist:
+        except CommunityPost.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'URL not found'}, status=404)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
@@ -174,3 +176,14 @@ def community_posts_api(request):
     ]
     return Response(data)
 
+@api_view(['POST'])
+@csrf_exempt
+def get_trending_alert(request):
+    data = json.loads(request.body)
+    lat = data.get('lat')
+    lon = data.get('lon')
+
+    # fake news for testing
+    return JsonResponse({
+        'alert': f"Fake News Alert: Something suspicious is trending near you (lat: {lat}, lon: {lon})"
+    })
