@@ -42,6 +42,3 @@ class Vote(models.Model):
     post = models.ForeignKey(CommunityPost, related_name="votes", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     vote_type = models.CharField(max_length=10, choices=VOTE_TYPES)
-
-    class Meta:
-        unique_together = ('post', 'user')  # No duplicate votes from the same user
