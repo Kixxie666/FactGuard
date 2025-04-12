@@ -99,11 +99,16 @@ def vote(request, post_id):
             # Save anonymous vote
             Vote.objects.create(post=post, vote_type=vote_type)
 
-            # Check if should be removed (only if method exists)
-            if hasattr(post, 'should_be_removed') and callable(post.should_be_removed):
-                if post.should_be_removed():
-                    post.delete()
-                    return JsonResponse({"message": "Post removed due to downvotes"}, status=200)
+            if vote_type == "fake":
+                # Also try to delete the associated SavedWebsite
+                try:
+                    saved_site = SavedWebsite.objects.get(url=post.url)
+                    saved_site.delete()
+                except SavedWebsite.DoesNotExist:
+                    pass
+
+                post.delete()
+                return JsonResponse({"message": "URL removed due to fake vote"}, status=200)
 
             return JsonResponse({"message": "Vote registered"}, status=200)
 
