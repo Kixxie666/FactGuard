@@ -96,15 +96,10 @@ def vote(request, post_id):
 
             post = get_object_or_404(CommunityPost, id=post_id)
 
-            # Save anonymous vote with debug logging
-            try:
-                vote = Vote.objects.create(post=post, vote_type=vote_type)
-                print(f"Vote created: {vote_type} for post {post.id}")
-            except Exception as e:
-                print(f"Vote creation failed: {str(e)}")
+            # Save vote anonymously — don't assume request.user exists
+            Vote.objects.create(post=post, vote_type=vote_type)
 
             if vote_type == "fake":
-                # Also try to delete the associated SavedWebsite
                 try:
                     saved_site = SavedWebsite.objects.get(url=post.url)
                     saved_site.delete()
